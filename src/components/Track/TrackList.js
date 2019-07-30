@@ -24,7 +24,7 @@ const TrackList = ({ classes, tracks }) => (
               <ListItem className={classes.root}>
                 <LikeTrack />
                 <ListItemText
-                  primaryTypographyText={{
+                  primarytypographytext={{
                     variant: "subheading",
                     color: "primary"
                   }}
@@ -36,9 +36,8 @@ const TrackList = ({ classes, tracks }) => (
                         {track.postedBy.username}
                     </Link>
                   }
-                  >
-                </ListItemText>
-                <AudioPlayer/>
+                  />
+                <AudioPlayer url={track.url}/>
               </ListItem>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails className={classes.details}>
