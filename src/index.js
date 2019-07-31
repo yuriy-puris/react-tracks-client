@@ -21,7 +21,7 @@ const client = new ApolloClient({
     },
     clientState: {
         defaults: {
-            isLoggedIn: localStorage.getItem("authToken")
+            isLoggedIn: !!localStorage.getItem("authToken")
         }
     }
 });

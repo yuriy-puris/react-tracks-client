@@ -25,12 +25,12 @@ import {UserContext} from '../../Root';
 const UpdateTrack = ({ classes, track }) => {
   const currentUser = useContext(UserContext);
   const [open, setOpen] = useState(false);
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState(track.title);
   const [description, setDescription] = useState(track.description);
   const [file, setFile] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [fileError, setFileError] = useState("");
-  const isCurrentUser = currentUser.id === track.postedBy.id; 
+  const isCurrentUser = currentUser.id === track.postedBy.id;
   
   const handleAudioChange = event => {
     const selectedFile = event.target.files[0];
@@ -66,102 +66,102 @@ const UpdateTrack = ({ classes, track }) => {
   };
 
   return isCurrentUser && (
-    <UserContext.Consumer>
-      <IconButton onClick={() => setOpen(true)}>
-        <EditIcon />
-      </IconButton>
-      <Mutation 
-        mutation={UPDATE_TRACK_MUTATION}
-        onCompleted={data => {
-          setOpen(false);
-          setSubmitting(false);
-          setTitle("");
-          setDescription("");
-        }}
-        refetchQueries={
-          () => [{ query : GET_TRACKS_QUERY }]
-        }>
-        {(updateTrack, {loading, error}) => {
-          if (error) return <Error />;
-
-          return (
-            <Dialog open={open} className={classes.dialog}>
-              <form
-                onSubmit={event => handleSubmit(event, updateTrack)}>
-                <DialogTitle>Update Dialog</DialogTitle>
-                <DialogContent>
-                  <DialogContentText>
-                    Add a title, description and audiofile
-                  </DialogContentText>
-                  <FormControl fullWidth>
-                  <TextField
-                    label="Title"
-                    placeholder="Add title"
-                    className={classes.textField} 
-                    value={title}
-                    onChange={event => setTitle(event.target.value)} />
-                  </FormControl>
-                  <FormControl fullWidth>
+      <div>
+        <IconButton onClick={() => setOpen(true)}>
+          <EditIcon />
+        </IconButton>
+        <Mutation 
+          mutation={UPDATE_TRACK_MUTATION}
+          onCompleted={data => {
+            setOpen(false);
+            setSubmitting(false);
+            setTitle("");
+            setDescription("");
+          }}
+          refetchQueries={
+            () => [{ query : GET_TRACKS_QUERY }]
+          }>
+          {(updateTrack, {loading, error}) => {
+            if (error) return <Error />;
+            
+            return (
+              <Dialog open={open} className={classes.dialog}>
+                <form
+                  onSubmit={event => handleSubmit(event, updateTrack)}>
+                  <DialogTitle>Update Dialog</DialogTitle>
+                  <DialogContent>
+                    <DialogContentText>
+                      Add a title, description and audiofile
+                    </DialogContentText>
+                    <FormControl fullWidth>
                     <TextField
-                      label="Description"
-                      placeholder="Add Description"
+                      label="Title"
+                      placeholder="Add title"
                       className={classes.textField} 
-                      value={description}
-                      onChange={event => setDescription(event.target.value)}/>
-                  </FormControl>
-                  <FormControl error={Boolean(fileError)}>
-                    <input 
-                      id="audio"
-                      type="file"
-                      accept="audio/mp3,audio/wav"
-                      className={classes.input}
-                      required
-                      onChange={handleAudioChange}/>
-                    <label htmlFor="audio">
-                        <Button 
-                          variant="outlined" 
-                          color={file ? "secondary" : "inherit"}
-                          component="span"
-                          className={classes.button}>
-                            Audio File
-                            <LibraryMusicIcon className={classes.icon}/>
-                        </Button>
-                        {file && file.name}
-                        <FormHelperText>{ fileError }</FormHelperText>
-                    </label>
-                  </FormControl>
-                </DialogContent>
-                <DialogActions>
-                  <Button
-                    disabled={submitting}
-                    className={classes.cancel}
-                    onClick={() => setOpen(false)}>
-                    Cancel
-                  </Button>
-                  <Button
-                    disabled={submitting && !title.trim() && !description.trim() && !file}
-                    type="submit"
-                    className={classes.save}>
-                    {submitting ? (
-                      <CircularProgress 
-                        className={classes.save}
-                        size={24} />
-                    ) : (
-                      "Update Track"
-                    )}
-                  </Button>
-                </DialogActions>
-              </form>
-            </Dialog>
-          )
-        }}
-      </Mutation>
-    </UserContext.Consumer>
+                      value={title}
+                      onChange={event => setTitle(event.target.value)} />
+                    </FormControl>
+                    <FormControl fullWidth>
+                      <TextField
+                        label="Description"
+                        placeholder="Add Description"
+                        className={classes.textField} 
+                        value={description}
+                        onChange={event => setDescription(event.target.value)}/>
+                    </FormControl>
+                    <FormControl error={Boolean(fileError)}>
+                      <input 
+                        id="audio"
+                        type="file"
+                        accept="audio/mp3,audio/wav"
+                        className={classes.input}
+                        required
+                        onChange={handleAudioChange}/>
+                      <label htmlFor="audio">
+                          <Button 
+                            variant="outlined" 
+                            color={file ? "secondary" : "inherit"}
+                            component="span"
+                            className={classes.button}>
+                              Audio File
+                              <LibraryMusicIcon className={classes.icon}/>
+                          </Button>
+                          {file && file.name}
+                          <FormHelperText>{ fileError }</FormHelperText>
+                      </label>
+                    </FormControl>
+                  </DialogContent>
+                  <DialogActions>
+                    <Button
+                      disabled={submitting}
+                      className={classes.cancel}
+                      onClick={() => setOpen(false)}>
+                      Cancel
+                    </Button>
+                    <Button
+                      disabled={submitting && !title.trim() && !description.trim() && !file}
+                      type="submit"
+                      className={classes.save}>
+                      {submitting ? (
+                        <CircularProgress 
+                          className={classes.save}
+                          size={24} />
+                      ) : (
+                        "Update Track"
+                      )}
+                    </Button>
+                  </DialogActions>
+                </form>
+              </Dialog>
+            )
+          }}
+        </Mutation>
+      </div>  
   )
 };
 
 const UPDATE_TRACK_MUTATION = gql`
-  nutation($trackId: Int!, $title: String, $url: String, $description: String) {
+  mutation($trackId: Int!, $title: String!, $url: String!, $description: String!) {
      updateTrack (
       trackId: $trackId,
       title: $title,

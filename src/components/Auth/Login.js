@@ -40,7 +40,7 @@ const Login = ({ classes, setNewUser }) => {
                   return (
                     <form 
                       className={classes.form}
-                      onSubmit={event => handleSubmit(event, tokenAuth)}>
+                      onSubmit={event => handleSubmit(event, tokenAuth, client)}>
                       <FormControl margin="normal" required fullWidth>
                         <InputLabel htmlFor="username">Username</InputLabel>
                         <Input 

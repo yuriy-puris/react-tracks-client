@@ -62,6 +62,12 @@ const CreateTrack = ({ classes }) => {
     createTrack({variables: { title, description, url: updateUrl }});
   };
 
+  const handleUpdateCache = (cache, {data: {createTrack}}) => {
+    const data = cache.readQuery({query: GET_TRACKS_QUERY});
+    const tracks = data.tracks.push(createTrack.track);
+    cache.writeQuery({query: GET_TRACKS_QUERY, data: { tracks }});
+  };
+ 
   return (
     <div>
       <Button
@@ -79,9 +85,7 @@ const CreateTrack = ({ classes }) => {
           setTitle("");
           setDescription("");
         }}
-        refetchQueries={
-          () => [{ query : GET_TRACKS_QUERY }]
-        }>
+        update={handleUpdateCache}>
         {(createTrack, {loading, error}) => {
           if (error) return <Error />;
 
@@ -169,6 +173,13 @@ const CREATE_TRACK_MUTATION = gql`
         title
         description
         url
+        likes {
+          id
+        }
+        postedBy {
+          id
+          username
+        }
       }
     }
   }
